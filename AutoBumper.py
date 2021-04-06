@@ -6,14 +6,13 @@ import getpass
 import configparser
 
 from selenium import webdriver
-# from selenium.common.exceptions import NoSuchElementException
-# from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
-#C:/Program Files (x86)/BraveSoftware/Brave-Browser/Application/brave.exe
+
+
 class BumpAutomator:
     """
     Class containing the program.
@@ -61,7 +60,7 @@ class BumpAutomator:
         if "settings.ini" in files:
             config.read('settings.ini')
             self.browser_name = config['SETTINGS']['BrowserName']
-            self.browser_path = config['SETTINGS']['BrowserPath']#.replace('/','\\')
+            self.browser_path = config['SETTINGS']['BrowserPath']
             possible_drivers = {
                 'chrome': "chromedriver",
                 'firefox': 'geckodriver',
@@ -82,13 +81,12 @@ class BumpAutomator:
                                   'BrowserPath': 'C:/example/exampleFolder/browserfolder/filename.exe',
                                   'OptionalChromeMuteSound': 'False',
                                   'OptionalChromeHeadless': 'False',
-                                  'OptionalChromeIgnoreLogs': 'False',}
+                                  'OptionalChromeIgnoreLogs': 'False', }
             with open("settings.ini", "w") as configfile:
                 config.write(configfile)
             print("Config file created, please add used browse name and path.")
             sleep(5)
             exit()
-
 
     def login(self):
         """
