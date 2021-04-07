@@ -81,7 +81,8 @@ class BumpAutomator:
                                   'OptionalChromeIgnoreLogs': 'True', }
             with open("settings.ini", "w") as configfile:
                 config.write(configfile)
-            print("Config file created, please add used browse name and path.")
+            print("Config file created, please add used browser name and path to the config. Remember to download " +
+                  "and add browser driver file to the application directory, otherwise it will not work.")
             sleep(5)
             exit()
 
