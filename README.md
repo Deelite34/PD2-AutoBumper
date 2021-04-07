@@ -1,5 +1,5 @@
 # PD2 AutoBumper
- Command line program, that automates tedious process of bumping many trades.  
+ Command line program, that automates tedious process of bumping many trades in the https://www.projectdiablo2.com/ website.
  Download: https://github.com/Deelite34/PD2-AutoBumper/releases
  
  ![WIP1](https://user-images.githubusercontent.com/35972878/113863728-4bfc6a00-97aa-11eb-929e-46e3b73a4fbb.gif)
