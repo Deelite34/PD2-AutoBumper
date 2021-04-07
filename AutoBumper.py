@@ -82,9 +82,9 @@ class BumpAutomator:
             with open("settings.ini", "w") as configfile:
                 config.write(configfile)
             print("Config file created, please add used browser name and path to the config. Remember to download " +
-                  "and add browser driver file to the application directory, otherwise it will not work.")
-            sleep(5)
-            exit()
+                  "and add browser driver file to the application directory, otherwise it will not work." +
+                  "You can close this window.")
+
 
     def login(self):
         """
