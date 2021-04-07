@@ -1,5 +1,6 @@
 # PD2 AutoBumper
- Command line program, that automates tedious process of bumping many trades.
+ Command line program, that automates tedious process of bumping many trades.  
+ Download: https://github.com/Deelite34/PD2-AutoBumper/releases/tag/1.0.0
  
  ![WIP1](https://user-images.githubusercontent.com/35972878/113863728-4bfc6a00-97aa-11eb-929e-46e3b73a4fbb.gif)
 
@@ -9,6 +10,7 @@
  - chrome or firefox browser  
  - browser driver for chosen browser, that allows automation. You can download it from https://pypi.org/project/selenium/#drivers
  ### Usage
+ 0. Download the program here https://github.com/Deelite34/PD2-AutoBumper/releases/tag/1.0.0  
  1. Close any other project diablo 2 website window you have open, to prevent too many requests issue
  2. Put webdriver in the program directory.
  3. When you launch Autobumper.exe for the first time, settings.ini file will be created. Add selected browser name(chrome or firefox), and add path to browsername.exe file
