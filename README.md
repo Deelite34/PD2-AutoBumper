@@ -8,7 +8,7 @@
  ### Requirements
  - project diablo 2 website account
  - chrome or firefox browser  
- - browser driver for chosen browser, that allows automation. You can download it from https://pypi.org/project/selenium/#drivers
+ - webdriver file for chosen browser, that allows automation. You can download it from https://pypi.org/project/selenium/#drivers
  ### Usage
  0. Download the program here https://github.com/Deelite34/PD2-AutoBumper/releases/tag/1.0.0  
  1. Close any other project diablo 2 website window you have open, to prevent too many requests issue
