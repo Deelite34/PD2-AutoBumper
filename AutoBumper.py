@@ -54,7 +54,7 @@ class BumpAutomator:
         Detects if settings file is present and loads it.
         If file is not present, one will be created, user will receive message.
         """
-        files = [f for f in os.listdir('../../../Programowanko/projekty i nauka/srednie/bulbulator/pd2bumptest') if os.path.isfile(f)]
+        files = [f for f in os.listdir(os.getcwd()) if os.path.isfile(f)]
         config = configparser.ConfigParser()
 
         if "settings.ini" in files:
@@ -72,16 +72,13 @@ class BumpAutomator:
                     self.browser_options.binary_location = self.browser_path
                     if config['SETTINGS']['OptionalChromeMuteSound'].lower() == "true":
                         self.browser_options.add_argument("--mute-audio")
-                    if config['SETTINGS']['OptionalChromeHeadless'].lower() == "true":
-                        self.browser_options.add_argument("--headless")
                     if config['SETTINGS']['OptionalChromeIgnoreLogs'].lower() == "true":
                         self.browser_options.add_argument('log-level=3')
         else:
             config['SETTINGS'] = {'BrowserName': 'chrome',
                                   'BrowserPath': 'C:/example/exampleFolder/browserfolder/filename.exe',
                                   'OptionalChromeMuteSound': 'False',
-                                  'OptionalChromeHeadless': 'False',
-                                  'OptionalChromeIgnoreLogs': 'False', }
+                                  'OptionalChromeIgnoreLogs': 'True', }
             with open("settings.ini", "w") as configfile:
                 config.write(configfile)
             print("Config file created, please add used browse name and path.")
