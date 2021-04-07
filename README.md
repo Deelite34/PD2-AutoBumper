@@ -10,8 +10,8 @@
  - browser driver for chosen browser, that allows automation. You can download it from https://pypi.org/project/selenium/#drivers
  ### Usage
  1. Close any other project diablo 2 website window you have open, to prevent too many requests issue
- 2. Put downloaded program and webdriver in the same folder
- 3. When you launch Autobumper.exe, settings.ini file will be created. Add selected browser name(chrome or firefox), and add path to browsername.exe file
+ 2. Put webdriver in the program directory.
+ 3. When you launch Autobumper.exe for the first time, settings.ini file will be created. Add selected browser name(chrome or firefox), and add path to browsername.exe file
  4. When you launch the program, the browser will pop up. In command line program input login and password, if it's correct, program will start doing the stuff. Do **not** minimize browser where automation is happening, or program will break and you'll need to launch it again.
  5. You can do different things like browser internet or play diablo 2. Browser window can be inactive and bumping will keep going, just remember to not minimize it.  
  
