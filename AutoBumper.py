@@ -7,6 +7,7 @@ import configparser
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -15,15 +16,15 @@ from selenium.webdriver.common.keys import Keys
 
 class BumpAutomator:
     """
-    Class containing the program.
+    Automatically bumps the trades on project diablo 2 website.\n
+    Possible contribution ideas below.
     TODO:
-        - DONE Find a better way to wait for website pages/buttons/divs to load,
-          better than sleep()'ing artificial amount of time every time
-        - DONE Add changable settings in a file
-        - DONE Add more texts to be displayed
-        - DONE Test different webdrivers
-        - Add program to github
-        - Fix bugs, upgrade code quality
+        - Fix bugs
+        - Upgrade code quality
+        - Add support for 2 remaining supported by selenium webdrivers
+        - Better handling of bugs and exceptions - display helpful message to user, and do not close the window
+          (example - handling of WebDriverException)
+        - Launched browser window should be smaller, with help of launch parameters(if possible with current browser)
     """
     def __init__(self):
         self.browser_options = None
@@ -33,13 +34,26 @@ class BumpAutomator:
         self.browser_options = None
         self.load_settings()
 
-        # gets driver file from local directory
+        # Gets webdriver file from local directory
         self.driver_path = f"{os.getcwd()}/{self.driver_name}.exe".replace('/', '\\')
 
         if self.driver_name == "chromedriver":
-            self.browser = webdriver.Chrome(executable_path=self.driver_path, options=self.browser_options)
+            try:
+                self.browser = webdriver.Chrome(executable_path=self.driver_path, options=self.browser_options)
+            except WebDriverException:
+                input("Error: Unable to launch browser. Did you add correct browser name and path, and did you add the " +
+                      "webdriver to the same folder as AutoBumper.exe? You can close this window.")
+            else:
+                pass
         elif self.driver_name == "geckodriver":
-            self.browser = webdriver.Firefox(executable_path=self.driver_path)
+            try:
+                self.browser = webdriver.Firefox(executable_path=self.driver_path)
+            except WebDriverException:
+                input("Error: Unable to launch browser. Did you add correct browser name, path to the .exe file of that browser, " +
+                      "and did you add the webdriver to the same folder as AutoBumper.exe? " +
+                      "You can close this window.")
+            else:
+                pass
 
         self.browser.get("https://www.projectdiablo2.com/login")
         self.__name = None
@@ -85,7 +99,6 @@ class BumpAutomator:
                   "and add webdriver file to the application directory, otherwise it will not work. " +
                   "You can close this window.")
 
-
     def login(self):
         """
         Logs into the website, and moves to manage trades page.
@@ -94,6 +107,7 @@ class BumpAutomator:
         password_field = self.browser.find_element_by_xpath("//input[@type='password']")
         log_in_button = self.browser.find_element_by_xpath("//button[@form='login-form']")
 
+        # Wait until we get correct credentials from user
         while True:
             try:
                 self.__get_credentials()
@@ -136,12 +150,10 @@ class BumpAutomator:
         current_scroll_height = 600  # Scroll height in trades div to be used when there's need to scroll down
 
         visible_items_divs = self.browser.find_elements_by_xpath("//div[@class='v-virtual-scroll__item']")
-        visible_buttons = self.browser.find_elements_by_xpath(
-            "//div[@class='v-virtual-scroll__item']//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
         scroll_container = self.browser.find_element_by_xpath("//div[@class='v-virtual-scroll']")
         sleep(3)
 
-        # First iteration. Having it outside while True loop allows to detect when end of item list is reached later
+        # First iteration. Having it outside while True loop allows us to detect later when end of item list is reached
         for i in visible_items_divs:
             item_text = match('[^\n]*', str(i.text)).group()
             current_visible_items.append(item_text)
@@ -149,12 +161,11 @@ class BumpAutomator:
             print("No items detected, ending..")
             return
 
-        print("First 6 items:", ", ".join(current_visible_items), end="\n\n")
-        bumped_count = 1
+        print(f"First 6 items: {', '.join(current_visible_items)}", end="\n\n")
         index = 0
         sleep(0.5)
-        for i in visible_buttons:
-            print(f"Selected item #{bumped_count}: {current_visible_items[index]}")
+        for i in current_visible_items:
+            print(f"Selected item #{index+1}: {current_visible_items[index]}")
             sleep(0.5)
             bump_buttons_to_click = self.browser.find_elements_by_xpath(
                 "//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
@@ -163,16 +174,12 @@ class BumpAutomator:
             bump_buttons_to_click[index].click()
             self.wait_until_div_is_gone(sleep_time=5)
             index += 1
-            bumped_count += 1
 
         self.browser.execute_script(f"arguments[0].scrollTop = {current_scroll_height}", scroll_container)
         sleep(1)
 
         while True:
             visible_items_divs = self.browser.find_elements_by_xpath("//div[@class='v-virtual-scroll__item']")
-            visible_buttons = self.browser.find_elements_by_xpath("//div[@class='v-virtual-scroll__item']" +
-                                                                  "//button[@class='v-btn v-btn--icon v-btn--round " +
-                                                                  "theme--dark v-size--default primary--text']")
             scroll_container = self.browser.find_element_by_xpath("//div[@class='v-virtual-scroll']")
             previous_visible_items = current_visible_items
             current_visible_items = []
@@ -180,12 +187,12 @@ class BumpAutomator:
                 item_text = match('[^\n]*', str(i.text)).group()
                 current_visible_items.append(item_text)  # Prints current item name
             if current_visible_items == previous_visible_items:
-                print('No more items to bump. Last 6 items:', ", ".join(current_visible_items))
+                print(f"No more items to bump. Last 6 items: {', '.join(current_visible_items)}")
                 break
 
             index = 0
-            for i in visible_buttons:
-                print(f"Selected item #{bumped_count}: {current_visible_items[index]}", end="")
+            for i in current_visible_items:
+                print(f"Selected item #{index+1}: {current_visible_items[index]}", end="")
                 bump_buttons_to_click = self.browser.find_elements_by_xpath(
                     "//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
                 while True:
@@ -199,15 +206,13 @@ class BumpAutomator:
                     except TimeoutException:
                         break
                 sleep(0.5)
-                print(f"Bumping item #{bumped_count}", end="\n\n")
+                print(f"Bumping item #{index+1}", end="\n\n")
                 bump_buttons_to_click[index].click()
                 self.wait_until_div_is_gone(sleep_time=8)
                 index += 1
-                bumped_count += 1
-            visible_buttons = self.browser.find_elements_by_xpath(
-                "//div[@class='v-virtual-scroll__item']//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
+
             current_scroll_height += 600
-            print('Attempting to move to scroll height: ', current_scroll_height)
+            print(f'Attempting to move to scroll height: {current_scroll_height}')
             sleep(2)
             self.browser.execute_script(f"arguments[0].scrollTop = {current_scroll_height}", scroll_container)
 
@@ -223,7 +228,6 @@ class BumpAutomator:
         sleep(0.2)
         overlay_appeared = False
         while True:
-            # print(".", end="")
             try:
                 sleep(0.5)
                 if overlay_appeared is False:
