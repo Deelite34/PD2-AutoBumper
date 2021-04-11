@@ -162,19 +162,20 @@ class BumpAutomator:
             return
 
         print(f"First 6 items: {', '.join(current_visible_items)}", end="\n\n")
-        index = 0
+        bumped_items_count = 1
         sleep(0.5)
-        for i in current_visible_items:
-            print(f"Selected item #{index+1}: {current_visible_items[index]}")
+        for index, item in enumerate(current_visible_items):
+            print(f"Selected item #{bumped_items_count}: {item}")
             sleep(0.5)
             bump_buttons_to_click = self.browser.find_elements_by_xpath(
                 "//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
             sleep(0.5)
-            print(f"Bumping item #{index+1}", end="\n\n")
+            print(f"Bumping item #{bumped_items_count}", end="\n\n")
             bump_buttons_to_click[index].click()
             self.wait_until_div_is_gone(sleep_time=5)
-            index += 1
+            bumped_items_count += 1
 
+        print(f'Attempting to move to scroll height: {current_scroll_height}')
         self.browser.execute_script(f"arguments[0].scrollTop = {current_scroll_height}", scroll_container)
         sleep(1)
 
@@ -185,14 +186,13 @@ class BumpAutomator:
             current_visible_items = []
             for i in visible_items_divs:
                 item_text = match('[^\n]*', str(i.text)).group()
-                current_visible_items.append(item_text)  # Prints current item name
+                current_visible_items.append(item_text)
             if current_visible_items == previous_visible_items:
                 print(f"No more items to bump. Last 6 items: {', '.join(current_visible_items)}")
                 break
 
-            index = 0
-            for i in current_visible_items:
-                print(f"Selected item #{index+1}: {current_visible_items[index]}", end="")
+            for index, item in enumerate(current_visible_items):
+                print(f"Selected item #{bumped_items_count}: {item}", end="")
                 bump_buttons_to_click = self.browser.find_elements_by_xpath(
                     "//button[@class='v-btn v-btn--icon v-btn--round theme--dark v-size--default primary--text']")
                 while True:
@@ -206,10 +206,10 @@ class BumpAutomator:
                     except TimeoutException:
                         break
                 sleep(0.5)
-                print(f"Bumping item #{index+1}", end="\n\n")
+                print(f"Bumping item #{bumped_items_count}", end="\n\n")
                 bump_buttons_to_click[index].click()
                 self.wait_until_div_is_gone(sleep_time=8)
-                index += 1
+                bumped_items_count += 1
 
             current_scroll_height += 600
             print(f'Attempting to move to scroll height: {current_scroll_height}')
